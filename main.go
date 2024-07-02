@@ -44,7 +44,7 @@ func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value("CalculateData").(CalculateRequest)
 	var a, b int = *params.A, *params.B
 
-	/// CALCULATE
+	a, b = doubleFactorial(a, b)
 
 	var response map[string]int = map[string]int{"a!": a, "b!": b}
 	responsedata, err := json.Marshal(response)
@@ -55,6 +55,35 @@ func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write(responsedata)
 }
 
+func doubleFactorial(a int, b int) (int, int) {
+	if a <= 1 && b <= 1 {
+		return 1, 1
+	}
+	channel := make(chan int)
+	period := func(start int, end int) {
+		log.Print("start: ", start, " end: ", end)
+		if start > end {
+			end, start = start, end
+		}
+		answer := 1
+		for i := start; i <= end; i++ {
+			answer *= i
+		}
+		channel <- answer
+	}
+	go period(min(a, b)+1, max(a, b))
+	// from zero to min(a, b)
+	go period(1, min(a, b))
+
+	m, n := <-channel, <-channel
+	if a > b {
+		return n * m, m
+	} else if a == b {
+		return m, m
+	} else {
+		return m, n * m
+	}
+}
 func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
