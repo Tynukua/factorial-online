@@ -22,17 +22,14 @@ type CalculateRequest struct {
 
 func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		w.Header().Set("Content-Type", "application/json")
 		params := CalculateRequest{}
 		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
-			w.Write([]byte("Invid JSON resourse"))
+			w.Write([]byte(`{"error":"Incorrect input"}`))
 			return
 		}
-		if params.A == nil || params.B == nil {
-			w.Write([]byte("Params a and b must be provided"))
-			return
-		}
-		if *params.A < 0 || *params.B < 0 {
-			w.Write([]byte("Value must be non-negative"))
+		if params.A == nil || params.B == nil || *params.A < 0 || *params.B < 0 {
+			w.Write([]byte(`{"error":"Incorrect input"}`))
 			return
 		}
 
@@ -61,7 +58,7 @@ func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		http.Error(w, `{"error":"Incorrect input"}`, http.StatusInternalServerError)
 		return
 	}
 	w.Write(responsedata)
