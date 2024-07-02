@@ -61,7 +61,6 @@ func doubleFactorial(a int, b int) (int, int) {
 	}
 	channel := make(chan int)
 	period := func(start int, end int) {
-		log.Print("start: ", start, " end: ", end)
 		if start > end {
 			end, start = start, end
 		}
