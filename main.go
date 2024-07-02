@@ -71,6 +71,6 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.POST("/calculate", CalculateCheckInputMiddleware(Calculate))
-	log.Println("Server started on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Println("Server started on port 8989")
+	log.Fatal(http.ListenAndServe(":8989", router))
 }
