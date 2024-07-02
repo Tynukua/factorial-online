@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math/big"
 	"net/http"
+	"os"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -18,6 +21,10 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 type CalculateRequest struct {
 	A *int `json:"a"`
 	B *int `json:"b"`
+}
+
+type Handler struct {
+	db *sql.DB
 }
 
 func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
@@ -38,22 +45,39 @@ func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
 		next(w, r, ps)
 	}
 }
-func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value("CalculateData").(CalculateRequest)
 	var a, b int = *params.A, *params.B
 	var af, bf *big.Int
+	var ac, bc int
+	var acf, bcf *big.Int
+	var err error
+	ac, acf, err = GetClosestFactorial(handler.db, a)
+	bc, bcf, err = GetClosestFactorial(handler.db, b)
+	af = big.NewInt(1)
+	bf = big.NewInt(1)
+	/// TODO: make swap-swap instead if
 	if a < b {
-		af = MulRangeParallel(1, a, 2)
-		bf = big.NewInt(1)
-		bf.Mul(af, MulRangeParallel(a+1, b, 2))
+		af.Mul(acf, MulRangeParallel(ac, a, 2))
+		if a > bc {
+			bc = a
+			bcf = af
+		}
+		bf.Mul(bcf, MulRangeParallel(bc+1, b, 2))
 	} else if a == b {
-		af = MulRangeParallel(1, a, 2)
+		af.Mul(acf, MulRangeParallel(ac, a, 2))
 		bf = af
 	} else {
-		bf = MulRangeParallel(1, b, 2)
-		af = big.NewInt(1)
-		af.Mul(bf, MulRangeParallel(b+1, a, 2))
+		bf.Mul(bcf, MulRangeParallel(bc, b, 2))
+		if b > ac {
+			ac = b
+			acf = bf
+		}
+		af.Mul(acf, MulRangeParallel(ac+1, a, 2))
 	}
+
+	SaveFactorialToDatabase(handler.db, a, af)
+	SaveFactorialToDatabase(handler.db, b, bf)
 
 	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
@@ -67,7 +91,16 @@ func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
-	router.POST("/calculate", CalculateCheckInputMiddleware(Calculate))
+	h := Handler{}
+	var err error = nil
+	h.db, err = sql.Open("mysql", os.Getenv("MYSQL_DSN"))
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	InitDatabase(h.db)
+	router.POST("/calculate", CalculateCheckInputMiddleware(h.Calculate))
+
 	log.Println("Server started on port 8989")
 	log.Fatal(http.ListenAndServe(":8989", router))
 }

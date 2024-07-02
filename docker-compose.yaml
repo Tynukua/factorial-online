@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8989:8989"
+    environment:
+      MYSQL_DSN: root:example@tcp(db:3306)/testdb
+
+    depends_on:
+      - db
+
+  db:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
