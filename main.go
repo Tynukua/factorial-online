@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/big"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -43,10 +44,21 @@ func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
 func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value("CalculateData").(CalculateRequest)
 	var a, b int = *params.A, *params.B
+	var af, bf *big.Int
+	if a < b {
+		af = MulRangeParallel(1, a, 2)
+		bf = big.NewInt(1)
+		bf.Mul(af, MulRangeParallel(a+1, b, 2))
+	} else if a == b {
+		af = MulRangeParallel(1, a, 2)
+		bf = af
+	} else {
+		bf = MulRangeParallel(1, b, 2)
+		af = big.NewInt(1)
+		af.Mul(bf, MulRangeParallel(b+1, a, 2))
+	}
 
-	a, b = doubleFactorial(a, b)
-
-	var response map[string]int = map[string]int{"a!": a, "b!": b}
+	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -55,34 +67,6 @@ func Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write(responsedata)
 }
 
-func doubleFactorial(a int, b int) (int, int) {
-	if a <= 1 && b <= 1 {
-		return 1, 1
-	}
-	channel := make(chan int)
-	period := func(start int, end int) {
-		if start > end {
-			end, start = start, end
-		}
-		answer := 1
-		for i := start; i <= end; i++ {
-			answer *= i
-		}
-		channel <- answer
-	}
-	go period(min(a, b)+1, max(a, b))
-	// from zero to min(a, b)
-	go period(1, min(a, b))
-
-	m, n := <-channel, <-channel
-	if a > b {
-		return n * m, m
-	} else if a == b {
-		return m, m
-	} else {
-		return m, n * m
-	}
-}
 func main() {
 	router := httprouter.New()
 	router.GET("/", Index)

@@ -1,37 +1,43 @@
 package main
 
 import (
+	"math/big"
 	"testing"
 )
 
-type FactorialCase struct {
-	a         int
-	b         int
-	expecteda int
-	expectedb int
+type MulRangeCase struct {
+	a        int
+	b        int
+	expected *big.Int
 }
 
-func TestFactorial(t *testing.T) {
-	cases := []FactorialCase{
-		{1, 2, 1, 2},
-		{2, 1, 2, 1},
+func TestMulRange(t *testing.T) {
 
-		{2, 3, 2, 6},
-		{3, 2, 6, 2},
-
-		{5, 5, 120, 120},
-
-		{5, 11, 120, 39916800},
-		{11, 5, 39916800, 120},
-
-		{10, 11, 39916800 / 11, 39916800},
+	cases := []MulRangeCase{
+		{1, 2, big.NewInt(2)},
+		{1, 5, big.NewInt(120)},
+		{3, 5, big.NewInt(60)},
 	}
 
 	for _, c := range cases {
-		gota, gotb := doubleFactorial(c.a, c.b)
-		if gota != c.expecteda || gotb != c.expectedb {
-			t.Fatalf("doubleFactorial(%d, %d) = (%d, %d), want (%d, %d)", c.a, c.b, gota, gotb, c.expecteda, c.expectedb)
+		got := MulRange(c.a, c.b)
+		if got.Cmp(c.expected) != 0 {
+			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
 		}
 	}
 
+}
+func TestMulRangeParrallel(t *testing.T) {
+	cases := []MulRangeCase{
+		{1, 2, big.NewInt(2)},
+		{1, 5, big.NewInt(120)},
+		{3, 5, big.NewInt(60)},
+	}
+
+	for _, c := range cases {
+		got := MulRangeParallel(c.a, c.b, 2)
+		if got.Cmp(c.expected) != 0 {
+			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
+		}
+	}
 }
