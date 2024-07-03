@@ -15,10 +15,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
-}
-
 type CalculateRequest struct {
 	A *int `json:"a"`
 	B *int `json:"b"`
@@ -26,6 +22,13 @@ type CalculateRequest struct {
 
 type Handler struct {
 	db *sql.DB
+}
+type ContentKey string
+
+const CalculateDataKey ContentKey = "CalculateData"
+
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Welcome!\n")
 }
 
 func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
@@ -41,13 +44,13 @@ func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "CalculateData", params)
+		ctx := context.WithValue(r.Context(), CalculateDataKey, params)
 		r = r.WithContext(ctx)
 		next(w, r, ps)
 	}
 }
 func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	params := r.Context().Value("CalculateData").(CalculateRequest)
+	params := r.Context().Value(CalculateDataKey).(CalculateRequest)
 	var a, b int = *params.A, *params.B
 	var swapped bool
 	if a > b {
