@@ -9,7 +9,7 @@ import (
 func InitDatabase(db *sql.DB) error {
 	query := `CREATE TABLE IF NOT EXISTS factorials (
 		number INT NOT NULL,
-		result VARCHAR(255) NOT NULL,
+		result TEXT NOT NULL,
 		PRIMARY KEY (number)
 	);`
 	result, err := db.Exec(query)
