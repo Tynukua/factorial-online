@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"net/http"
 	"os"
+	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
@@ -56,18 +57,17 @@ func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httpr
 	var af, bf *big.Int
 	var ac, bc int
 	var acf, bcf *big.Int
-	var err error
-	ac, acf, err = GetClosestFactorial(handler.db, a)
-	bc, bcf, err = GetClosestFactorial(handler.db, b)
+	ac, acf, _ = GetClosestFactorial(handler.db, a)
+	bc, bcf, _ = GetClosestFactorial(handler.db, b)
 	af = big.NewInt(1)
 	bf = big.NewInt(1)
 
-	af.Mul(acf, MulRangeParallel(ac, a, 2))
+	af.Mul(acf, MulRangeParallel(ac, a, runtime.NumCPU()))
 	if a > bc {
 		bc = a
 		bcf = af
 	}
-	bf.Mul(bcf, MulRangeParallel(bc+1, b, 2))
+	bf.Mul(bcf, MulRangeParallel(bc+1, b, runtime.NumCPU()))
 
 	SaveFactorialToDatabase(handler.db, a, af)
 	SaveFactorialToDatabase(handler.db, b, bf)
