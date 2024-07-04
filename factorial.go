@@ -23,6 +23,7 @@ func MulRangeParallel(a int, b int, numWorkers int) *big.Int {
 	results := make(chan *big.Int, numWorkers)
 	step := (b - a + 1) / numWorkers
 
+	wg.Add(numWorkers)
 	for i := 0; i < numWorkers; i++ {
 		start := a + i*step
 		end := start + step - 1
@@ -30,7 +31,6 @@ func MulRangeParallel(a int, b int, numWorkers int) *big.Int {
 			end = b
 		}
 
-		wg.Add(1)
 		go func(start, end int) {
 			defer wg.Done()
 			results <- MulRange(start, end)
