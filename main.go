@@ -65,7 +65,7 @@ func main() {
 	router.GET("/", Index)
 	h := Handler{}
 	h.db = NewMySQLFactorialDatabase(os.Getenv("MYSQL_DSN"))
-
+	// h.db = NewMemoryFactorialDatabase()
 	h.db.InitDatabase()
 	router.POST("/calculate", CalculateCheckInputMiddleware(h.Calculate))
 

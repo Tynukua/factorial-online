@@ -41,3 +41,29 @@ func TestMulRangeParrallel(t *testing.T) {
 		}
 	}
 }
+
+type FactorialCase struct {
+	a         int
+	b         int
+	expecteda *big.Int
+	expectedb *big.Int
+}
+
+func TestDoubleFactorial(t *testing.T) {
+	db := NewMemoryFactorialDatabase()
+	db.InitDatabase()
+	cases := []FactorialCase{
+		{1, 2, big.NewInt(1), big.NewInt(2)},
+		{1, 2, big.NewInt(1), big.NewInt(2)},
+		{1, 5, big.NewInt(1), big.NewInt(120)},
+		{5, 1, big.NewInt(120), big.NewInt(1)},
+		{11, 11, big.NewInt(39916800), big.NewInt(39916800)},
+	}
+
+	for _, c := range cases {
+		gota, gotb := DoubleFactorial(db, c.a, c.b)
+		if gota.Cmp(c.expecteda) != 0 || gotb.Cmp(c.expectedb) != 0 {
+			t.Fatalf("DoubleFactorial(%d, %d) = %d, %d, want %d, %d", c.a, c.b, gota, gotb, c.expecteda, c.expectedb)
+		}
+	}
+}

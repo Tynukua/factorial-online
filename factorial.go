@@ -64,7 +64,7 @@ func DoubleFactorial(o FactorialDatabase, a int, b int) (*big.Int, *big.Int) {
 	af = big.NewInt(1)
 	bf = big.NewInt(1)
 
-	af.Mul(acf, MulRangeParallel(ac, a, runtime.NumCPU()))
+	af.Mul(acf, MulRangeParallel(ac+1, a, runtime.NumCPU()))
 	if a > bc {
 		bc = a
 		bcf = af
