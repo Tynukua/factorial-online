@@ -2,14 +2,12 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math/big"
 	"net/http"
 	"os"
-	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
@@ -21,7 +19,7 @@ type CalculateRequest struct {
 }
 
 type Handler struct {
-	db *sql.DB
+	db FactorialDatabase
 }
 type ContentKey string
 
@@ -52,31 +50,7 @@ func CalculateCheckInputMiddleware(next httprouter.Handle) httprouter.Handle {
 func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value(CalculateDataKey).(CalculateRequest)
 	var a, b int = *params.A, *params.B
-	var swapped bool
-	if a > b {
-		a, b = b, a
-		swapped = true
-	}
-	var af, bf *big.Int
-	var ac, bc int
-	var acf, bcf *big.Int
-	ac, acf, _ = GetClosestFactorial(handler.db, a)
-	bc, bcf, _ = GetClosestFactorial(handler.db, b)
-	af = big.NewInt(1)
-	bf = big.NewInt(1)
-
-	af.Mul(acf, MulRangeParallel(ac, a, runtime.NumCPU()))
-	if a > bc {
-		bc = a
-		bcf = af
-	}
-	bf.Mul(bcf, MulRangeParallel(bc+1, b, runtime.NumCPU()))
-
-	SaveFactorialToDatabase(handler.db, a, af)
-	SaveFactorialToDatabase(handler.db, b, bf)
-	if swapped {
-		af, bf = bf, af
-	}
+	af, bf := DoubleFactorial(handler.db, a, b)
 	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
 	if err != nil {
@@ -90,13 +64,9 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	h := Handler{}
-	var err error = nil
-	h.db, err = sql.Open("mysql", os.Getenv("MYSQL_DSN"))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	InitDatabase(h.db)
+	h.db = NewMySQLFactorialDatabase(os.Getenv("MYSQL_DSN"))
+
+	h.db.InitDatabase()
 	router.POST("/calculate", CalculateCheckInputMiddleware(h.Calculate))
 
 	log.Println("Server started on port 8989")
