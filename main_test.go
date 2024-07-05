@@ -3,6 +3,8 @@ package main
 import (
 	"math/big"
 	"testing"
+
+	"github.com/Tynukua/factorial-online/database"
 )
 
 type MulRangeCase struct {
@@ -50,7 +52,7 @@ type FactorialCase struct {
 }
 
 func TestDoubleFactorial(t *testing.T) {
-	db := NewMemoryFactorialDatabase()
+	db := database.NewMemoryFactorialDatabase()
 	db.InitDatabase()
 	cases := []FactorialCase{
 		{1, 2, big.NewInt(1), big.NewInt(2)},

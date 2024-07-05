@@ -4,6 +4,8 @@ import (
 	"math/big"
 	"runtime"
 	"sync"
+
+	"github.com/Tynukua/factorial-online/database"
 )
 
 func MulRange(a, b int) *big.Int {
@@ -50,7 +52,7 @@ func MulRangeParallel(a int, b int, numWorkers int) *big.Int {
 	return product
 }
 
-func DoubleFactorial(o FactorialDatabase, a int, b int) (*big.Int, *big.Int) {
+func DoubleFactorial(o database.FactorialDatabase, a int, b int) (*big.Int, *big.Int) {
 	var swapped bool
 	if a > b {
 		a, b = b, a

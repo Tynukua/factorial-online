@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -7,27 +7,10 @@ import (
 	"os"
 )
 
-type FactorialDatabase interface {
-	InitDatabase() error
-	SaveFactorial(number int, result *big.Int) error
-	GetClosestFactorial(number int) (found int, result *big.Int, err error)
-}
-
 type MySQLFactorialDatabase struct {
 	FactorialDatabase
 
 	db *sql.DB
-}
-
-type MemoryFactorialDatabase struct {
-	FactorialDatabase
-	factorials map[int]*big.Int
-}
-
-func NewMemoryFactorialDatabase() MemoryFactorialDatabase {
-	return MemoryFactorialDatabase{
-		factorials: make(map[int]*big.Int),
-	}
 }
 
 func NewMySQLFactorialDatabase(dsn string) MySQLFactorialDatabase {
@@ -38,10 +21,6 @@ func NewMySQLFactorialDatabase(dsn string) MySQLFactorialDatabase {
 	return MySQLFactorialDatabase{
 		db: db,
 	}
-}
-
-func (o MemoryFactorialDatabase) InitDatabase() error {
-	return nil
 }
 
 func (o MySQLFactorialDatabase) InitDatabase() error {
@@ -55,28 +34,12 @@ func (o MySQLFactorialDatabase) InitDatabase() error {
 	return err
 }
 
-func (o MemoryFactorialDatabase) SaveFactorial(number int, result *big.Int) error {
-	o.factorials[number] = result
-	return nil
-}
-
 func (o MySQLFactorialDatabase) SaveFactorial(number int, result *big.Int) error {
 	query := "INSERT INTO factorials (number, result) VALUES (?, ?)"
 	qres, err := o.db.Exec(query, number, result.String())
 	log.Print(qres, number, err)
 
 	return err
-}
-
-func (o MemoryFactorialDatabase) GetClosestFactorial(number int) (found int, result *big.Int, err error) {
-	for i := number; i > 0; i-- {
-		if o.factorials[i] != nil {
-			found = i
-			result = o.factorials[i]
-			return
-		}
-	}
-	return 1, big.NewInt(1), nil
 }
 
 func (o MySQLFactorialDatabase) GetClosestFactorial(number int) (found int, result *big.Int, err error) {

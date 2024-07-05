@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Tynukua/factorial-online/database"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 )
@@ -19,7 +20,7 @@ type CalculateRequest struct {
 }
 
 type Handler struct {
-	db FactorialDatabase
+	db database.FactorialDatabase
 }
 type ContentKey string
 
@@ -64,7 +65,7 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	h := Handler{}
-	h.db = NewMySQLFactorialDatabase(os.Getenv("MYSQL_DSN"))
+	h.db = database.NewMySQLFactorialDatabase(os.Getenv("MYSQL_DSN"))
 	// h.db = NewMemoryFactorialDatabase()
 	h.db.InitDatabase()
 	router.POST("/calculate", CalculateCheckInputMiddleware(h.Calculate))
