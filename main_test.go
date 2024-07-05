@@ -6,8 +6,7 @@ import (
 
 	"github.com/Tynukua/factorial-online/database"
 	"github.com/Tynukua/factorial-online/handlers"
-
-	"github.com/Tynukua/factorial-online/math"
+	"github.com/Tynukua/factorial-online/util"
 )
 
 type MulRangeCase struct {
@@ -25,7 +24,7 @@ func TestMulRange(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := math.MulRange(c.a, c.b)
+		got := util.MulRange(c.a, c.b)
 		if got.Cmp(c.expected) != 0 {
 			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
 		}
@@ -40,7 +39,7 @@ func TestMulRangeParrallel(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := math.MulRangeParallel(c.a, c.b, 2)
+		got := util.MulRangeParallel(c.a, c.b, 2)
 		if got.Cmp(c.expected) != 0 {
 			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
 		}

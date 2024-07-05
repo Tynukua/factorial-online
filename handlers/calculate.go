@@ -8,7 +8,7 @@ import (
 	"runtime"
 
 	"github.com/Tynukua/factorial-online/database"
-	"github.com/Tynukua/factorial-online/math"
+	"github.com/Tynukua/factorial-online/util"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -56,12 +56,12 @@ func (handler Handler) DoubleFactorial(a int, b int) (*big.Int, *big.Int) {
 	af = big.NewInt(1)
 	bf = big.NewInt(1)
 
-	af.Mul(acf, math.MulRangeParallel(ac+1, a, runtime.NumCPU()))
+	af.Mul(acf, util.MulRangeParallel(ac+1, a, runtime.NumCPU()))
 	if a > bc {
 		bc = a
 		bcf = af
 	}
-	bf.Mul(bcf, math.MulRangeParallel(bc+1, b, runtime.NumCPU()))
+	bf.Mul(bcf, util.MulRangeParallel(bc+1, b, runtime.NumCPU()))
 
 	handler.DB.SaveFactorial(a, af)
 	handler.DB.SaveFactorial(b, bf)
