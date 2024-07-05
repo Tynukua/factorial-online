@@ -1,11 +1,8 @@
-package main
+package math
 
 import (
 	"math/big"
-	"runtime"
 	"sync"
-
-	"github.com/Tynukua/factorial-online/database"
 )
 
 func MulRange(a, b int) *big.Int {
@@ -50,33 +47,4 @@ func MulRangeParallel(a int, b int, numWorkers int) *big.Int {
 	}
 
 	return product
-}
-
-func DoubleFactorial(o database.FactorialDatabase, a int, b int) (*big.Int, *big.Int) {
-	var swapped bool
-	if a > b {
-		a, b = b, a
-		swapped = true
-	}
-	var af, bf *big.Int
-	var ac, bc int
-	var acf, bcf *big.Int
-	ac, acf, _ = o.GetClosestFactorial(a)
-	bc, bcf, _ = o.GetClosestFactorial(b)
-	af = big.NewInt(1)
-	bf = big.NewInt(1)
-
-	af.Mul(acf, MulRangeParallel(ac+1, a, runtime.NumCPU()))
-	if a > bc {
-		bc = a
-		bcf = af
-	}
-	bf.Mul(bcf, MulRangeParallel(bc+1, b, runtime.NumCPU()))
-
-	o.SaveFactorial(a, af)
-	o.SaveFactorial(b, bf)
-	if swapped {
-		af, bf = bf, af
-	}
-	return af, bf
 }

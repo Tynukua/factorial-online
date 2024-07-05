@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/Tynukua/factorial-online/database"
+	"github.com/Tynukua/factorial-online/handlers"
+
+	"github.com/Tynukua/factorial-online/math"
 )
 
 type MulRangeCase struct {
@@ -22,7 +25,7 @@ func TestMulRange(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := MulRange(c.a, c.b)
+		got := math.MulRange(c.a, c.b)
 		if got.Cmp(c.expected) != 0 {
 			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
 		}
@@ -37,7 +40,7 @@ func TestMulRangeParrallel(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := MulRangeParallel(c.a, c.b, 2)
+		got := math.MulRangeParallel(c.a, c.b, 2)
 		if got.Cmp(c.expected) != 0 {
 			t.Fatalf("MulRange(%d, %d) = %d, want %d", c.a, c.b, got, c.expected)
 		}
@@ -54,6 +57,8 @@ type FactorialCase struct {
 func TestDoubleFactorial(t *testing.T) {
 	db := database.NewMemoryFactorialDatabase()
 	db.InitDatabase()
+	h := handlers.Handler{DB: db}
+
 	cases := []FactorialCase{
 		{1, 2, big.NewInt(1), big.NewInt(2)},
 		{1, 2, big.NewInt(1), big.NewInt(2)},
@@ -63,7 +68,7 @@ func TestDoubleFactorial(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		gota, gotb := DoubleFactorial(db, c.a, c.b)
+		gota, gotb := h.DoubleFactorial(c.a, c.b)
 		if gota.Cmp(c.expecteda) != 0 || gotb.Cmp(c.expectedb) != 0 {
 			t.Fatalf("DoubleFactorial(%d, %d) = %d, %d, want %d, %d", c.a, c.b, gota, gotb, c.expecteda, c.expectedb)
 		}
