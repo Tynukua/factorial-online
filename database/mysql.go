@@ -18,20 +18,16 @@ func NewMySQLFactorialDatabase(dsn string) MySQLFactorialDatabase {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return MySQLFactorialDatabase{
-		db: db,
-	}
-}
-
-func (o MySQLFactorialDatabase) InitDatabase() error {
 	query := `CREATE TABLE IF NOT EXISTS factorials (
 		number INT NOT NULL,
 		result TEXT NOT NULL,
 		PRIMARY KEY (number)
 	);`
-	result, err := o.db.Exec(query)
+	result, err := db.Exec(query)
 	log.Print(result, err)
-	return err
+	return MySQLFactorialDatabase{
+		db: db,
+	}
 }
 
 func (o MySQLFactorialDatabase) SaveFactorial(number int, result *big.Int) error {

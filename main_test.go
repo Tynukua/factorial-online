@@ -56,7 +56,6 @@ type FactorialCase struct {
 
 func TestDoubleFactorial(t *testing.T) {
 	db := database.NewMemoryFactorialDatabase()
-	db.InitDatabase()
 	h := handlers.Handler{DB: db}
 
 	cases := []FactorialCase{

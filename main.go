@@ -17,8 +17,6 @@ func main() {
 	router.GET("/", handlers.Index)
 	h := handlers.Handler{}
 	h.DB = database.NewMySQLFactorialDatabase(os.Getenv("MYSQL_DSN"))
-	// h.db = NewMemoryFactorialDatabase()
-	h.DB.InitDatabase()
 	router.POST("/calculate", middleware.CalculateCheckInputMiddleware((h.Calculate)))
 
 	log.Println("Server started on port 8989")

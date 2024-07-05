@@ -9,10 +9,6 @@ type MemoryFactorialDatabase struct {
 	factorials map[int]*big.Int
 }
 
-func (o MemoryFactorialDatabase) InitDatabase() error {
-	return nil
-}
-
 func NewMemoryFactorialDatabase() MemoryFactorialDatabase {
 	return MemoryFactorialDatabase{
 		factorials: make(map[int]*big.Int),
