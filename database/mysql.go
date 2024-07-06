@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"math/big"
-	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type MySQLFactorialDatabase struct {
@@ -14,7 +15,7 @@ type MySQLFactorialDatabase struct {
 }
 
 func NewMySQLFactorialDatabase(dsn string) MySQLFactorialDatabase {
-	db, err := sql.Open("mysql", os.Getenv("MYSQL_DSN"))
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

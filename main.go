@@ -6,7 +6,6 @@ import (
 
 	"github.com/Tynukua/factorial-online/config"
 	"github.com/Tynukua/factorial-online/router"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {

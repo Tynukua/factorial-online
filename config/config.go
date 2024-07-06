@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"log"
+	"os"
+)
 
 // enum db type
 type DBType string
@@ -19,14 +22,14 @@ type Config struct {
 func NewConfig() Config {
 	var cfg Config
 	cfg.Port = "8989"
-	if dsn := os.Getenv("MYSQL_DSN"); dsn == "" {
-		cfg.DBType = Memory
-	} else {
+	cfg.DBType = Memory
+	if dsn := os.Getenv("MYSQL_DSN"); dsn != "" {
 		cfg.DBType = MySQL
 		cfg.DSN = dsn
 	}
 	if port := os.Getenv("PORT"); port != "" {
 		cfg.Port = port
 	}
+	log.Println("Database type:", cfg.DBType)
 	return cfg
 }
