@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Tynukua/factorial-online/database"
-	"github.com/Tynukua/factorial-online/handlers"
+	"github.com/Tynukua/factorial-online/config"
+	"github.com/Tynukua/factorial-online/services"
 	"github.com/Tynukua/factorial-online/util"
 )
 
@@ -54,8 +54,7 @@ type FactorialCase struct {
 }
 
 func TestDoubleFactorial(t *testing.T) {
-	db := database.NewMemoryFactorialDatabase()
-	h := handlers.Handler{DB: db}
+	s := services.NewFactorialService(config.Config{})
 
 	cases := []FactorialCase{
 		{1, 2, big.NewInt(1), big.NewInt(2)},
@@ -66,7 +65,7 @@ func TestDoubleFactorial(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		gota, gotb := h.DoubleFactorial(c.a, c.b)
+		gota, gotb := s.DoubleFactorial(c.a, c.b)
 		if gota.Cmp(c.expecteda) != 0 || gotb.Cmp(c.expectedb) != 0 {
 			t.Fatalf("DoubleFactorial(%d, %d) = %d, %d, want %d, %d", c.a, c.b, gota, gotb, c.expecteda, c.expectedb)
 		}

@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
-	"runtime"
 
-	"github.com/Tynukua/factorial-online/database"
-	"github.com/Tynukua/factorial-online/util"
+	"github.com/Tynukua/factorial-online/config"
+	"github.com/Tynukua/factorial-online/services"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -19,8 +18,13 @@ type CalculateRequest struct {
 }
 
 type Handler struct {
-	DB database.FactorialDatabase
+	service services.FactorialService
 }
+
+func NewCalculateHandler(cfg config.Config) Handler {
+	return Handler{service: services.NewFactorialService(cfg)}
+}
+
 type ContentKey string
 
 const CalculateDataKey ContentKey = "CalculateData"
@@ -32,7 +36,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value(CalculateDataKey).(CalculateRequest)
 	var a, b int = *params.A, *params.B
-	af, bf := handler.DoubleFactorial(a, b)
+	af, bf := handler.service.DoubleFactorial(a, b)
 	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
 	if err != nil {
@@ -40,33 +44,4 @@ func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httpr
 		return
 	}
 	w.Write(responsedata)
-}
-
-func (handler Handler) DoubleFactorial(a int, b int) (*big.Int, *big.Int) {
-	var swapped bool
-	if a > b {
-		a, b = b, a
-		swapped = true
-	}
-	var af, bf *big.Int
-	var ac, bc int
-	var acf, bcf *big.Int
-	ac, acf, _ = handler.DB.GetClosestFactorial(a)
-	bc, bcf, _ = handler.DB.GetClosestFactorial(b)
-	af = big.NewInt(1)
-	bf = big.NewInt(1)
-
-	af.Mul(acf, util.MulRangeParallel(ac+1, a, runtime.NumCPU()))
-	if a > bc {
-		bc = a
-		bcf = af
-	}
-	bf.Mul(bcf, util.MulRangeParallel(bc+1, b, runtime.NumCPU()))
-
-	handler.DB.SaveFactorial(a, af)
-	handler.DB.SaveFactorial(b, bf)
-	if swapped {
-		af, bf = bf, af
-	}
-	return af, bf
 }
