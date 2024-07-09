@@ -1,12 +1,11 @@
 package main
 
 import (
+	"github.com/Tynukua/factorial-online/internal/config"
+	"github.com/Tynukua/factorial-online/internal/services"
+	"github.com/Tynukua/factorial-online/internal/util"
 	"math/big"
 	"testing"
-
-	"github.com/Tynukua/factorial-online/config"
-	"github.com/Tynukua/factorial-online/services"
-	"github.com/Tynukua/factorial-online/util"
 )
 
 type MulRangeCase struct {

@@ -3,9 +3,9 @@ package middleware
 import (
 	"context"
 	"encoding/json"
+	"github.com/Tynukua/factorial-online/internal/handlers"
 	"net/http"
 
-	"github.com/Tynukua/factorial-online/handlers"
 	"github.com/julienschmidt/httprouter"
 )
 

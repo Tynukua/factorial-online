@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github.com/Tynukua/factorial-online/config"
-	"github.com/Tynukua/factorial-online/handlers"
-	"github.com/Tynukua/factorial-online/middleware"
+	"github.com/Tynukua/factorial-online/internal/config"
+	"github.com/Tynukua/factorial-online/internal/handlers"
+	"github.com/Tynukua/factorial-online/internal/middleware"
 	"github.com/julienschmidt/httprouter"
 )
 

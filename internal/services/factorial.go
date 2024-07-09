@@ -1,24 +1,23 @@
 package services
 
 import (
+	"github.com/Tynukua/factorial-online/internal/config"
+	database2 "github.com/Tynukua/factorial-online/internal/database"
+	"github.com/Tynukua/factorial-online/internal/util"
 	"math/big"
 	"runtime"
-
-	"github.com/Tynukua/factorial-online/config"
-	"github.com/Tynukua/factorial-online/database"
-	"github.com/Tynukua/factorial-online/util"
 )
 
 type FactorialService struct {
-	db database.FactorialDatabase
+	db database2.FactorialDatabase
 }
 
 func NewFactorialService(cfg config.Config) FactorialService {
 	switch expression := cfg.DBType; expression {
 	case config.MySQL:
-		return FactorialService{db: database.NewMySQLFactorialDatabase(cfg.DSN)}
+		return FactorialService{db: database2.NewMySQLFactorialDatabase(cfg.DSN)}
 	default:
-		return FactorialService{db: database.NewMemoryFactorialDatabase()}
+		return FactorialService{db: database2.NewMemoryFactorialDatabase()}
 	}
 }
 

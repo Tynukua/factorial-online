@@ -3,11 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Tynukua/factorial-online/internal/config"
+	"github.com/Tynukua/factorial-online/internal/services"
 	"math/big"
 	"net/http"
-
-	"github.com/Tynukua/factorial-online/config"
-	"github.com/Tynukua/factorial-online/services"
 
 	"github.com/julienschmidt/httprouter"
 )

@@ -1,11 +1,10 @@
 package main
 
 import (
+	"github.com/Tynukua/factorial-online/internal/config"
+	"github.com/Tynukua/factorial-online/internal/router"
 	"log"
 	"net/http"
-
-	"github.com/Tynukua/factorial-online/config"
-	"github.com/Tynukua/factorial-online/router"
 )
 
 func main() {
