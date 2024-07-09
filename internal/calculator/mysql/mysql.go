@@ -4,24 +4,21 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Tynukua/factorial-online/internal/calculator"
-	"github.com/Tynukua/factorial-online/internal/calculator/mathematics"
 	"math/big"
 )
 
 type MysqlCalculator struct {
 	calculator.Calculator
-	db *sql.DB
+	db       *sql.DB
+	fallback calculator.Calculator
 }
 
-func NewMysqlCalculator(dsn string) MysqlCalculator {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		panic(err)
-	}
-	return MysqlCalculator{db: db}
+func NewMysqlCalculator(dsn string, fallback calculator.Calculator) MysqlCalculator {
+	db, _ := sql.Open("mysql", dsn)
+	return MysqlCalculator{db: db, fallback: fallback}
 }
 
 func (m MysqlCalculator) Factorial(ctx context.Context, sn int) *big.Int {
 
-	return mathematics.MathCalculator{}.Factorial(ctx, sn)
+	return m.fallback.Factorial(ctx, sn)
 }

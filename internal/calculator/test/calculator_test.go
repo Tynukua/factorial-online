@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"github.com/Tynukua/factorial-online/internal/calculator/mathematics"
 	"github.com/Tynukua/factorial-online/internal/calculator/mysql"
 	"github.com/Tynukua/factorial-online/internal/calculator/service"
 	"log"
@@ -11,21 +12,21 @@ import (
 
 func TestCalculatorService(t *testing.T) {
 	var a service.AsyncService
-	var m mysql.MysqlCalculator
+	m := mysql.NewMysqlCalculator("shrug", mathematics.MathCalculator{})
 	ctx := context.TODO()
-	wg := &sync.WaitGroup{}
-	ctx = context.WithValue(ctx, "waitgroup", wg)
+	wg := sync.WaitGroup{}
 	f := func() {
 		log.Println(m.Factorial(ctx, 5555))
-		wg := ctx.Value("waitgroup").(*sync.WaitGroup)
-		defer wg.Done()
+		wg.Done()
 	}
 	g := func() {
 		log.Println(m.Factorial(ctx, 6666))
-		wg := ctx.Value("waitgroup").(*sync.WaitGroup)
-		defer wg.Done()
+		wg.Done()
 	}
-	err := a.Do(ctx, []func(){f, g})
+	fs := []func(){f, g}
+	wg.Add(len(fs))
+	err := a.Do(ctx, fs)
+	wg.Wait()
 	if err != nil {
 		t.Error(err)
 	}
