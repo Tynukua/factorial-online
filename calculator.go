@@ -1,4 +1,4 @@
-package webcalculator
+package factorial_online
 
 import (
 	"context"

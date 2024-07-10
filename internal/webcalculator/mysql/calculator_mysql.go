@@ -3,17 +3,17 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"github.com/Tynukua/factorial-online/internal/webcalculator"
+	"github.com/Tynukua/factorial-online"
 	"log"
 	"math/big"
 )
 
 type Calculator struct {
 	db       *sql.DB
-	fallback webcalculator.Calculator
+	fallback factorial_online.Calculator
 }
 
-func New(db *sql.DB, fallback webcalculator.Calculator) *Calculator {
+func New(db *sql.DB, fallback factorial_online.Calculator) *Calculator {
 	query := `CREATE TABLE IF NOT EXISTS factorials (
 		number INT NOT NULL,
 		result TEXT NOT NULL,
