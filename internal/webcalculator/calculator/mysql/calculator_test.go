@@ -1,4 +1,4 @@
-package mysql
+package calculatormysql
 
 import (
 	"context"
@@ -20,7 +20,7 @@ func (suite *CalculatorTestSuite) SetupSuite() {
 
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
 	suite.Require().NoError(err)
-	suite.calculator = New(db, mathematics.New())
+	suite.calculator = New(db, calculatormathematics.New())
 }
 
 type FactorialCase struct {

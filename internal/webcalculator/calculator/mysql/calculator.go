@@ -1,4 +1,4 @@
-package mysql
+package calculatormysql
 
 import (
 	"context"

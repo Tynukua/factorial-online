@@ -1,4 +1,4 @@
-package mathematics
+package calculatormathematics
 
 import (
 	"context"
