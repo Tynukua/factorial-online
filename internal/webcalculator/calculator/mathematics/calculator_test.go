@@ -7,16 +7,16 @@ import (
 	"testing"
 )
 
-type CalculatorSuite struct {
+type CalculatorTestSuite struct {
 	suite.Suite
 	calculator *Calculator
 }
 
-func (s *CalculatorSuite) SetupSuite() {
+func (s *CalculatorTestSuite) SetupSuite() {
 	s.calculator = New()
 }
 
-func (s *CalculatorSuite) TestFactorial() {
+func (s *CalculatorTestSuite) TestFactorial() {
 	ctx := context.TODO()
 	s.Require().Equal(s.calculator.Factorial(ctx, 5), big.NewInt(120))
 	s.Require().Equal(s.calculator.Factorial(ctx, 6), big.NewInt(720))
@@ -24,5 +24,5 @@ func (s *CalculatorSuite) TestFactorial() {
 }
 
 func TestCalculatorFactorial(t *testing.T) {
-	suite.Run(t, new(CalculatorSuite))
+	suite.Run(t, new(CalculatorTestSuite))
 }

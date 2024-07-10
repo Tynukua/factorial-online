@@ -7,20 +7,20 @@ import (
 	"testing"
 )
 
-type CalclualtorSuite struct {
+type AsyncServiceTestSuite struct {
 	suite.Suite
 	as *AsyncService
 }
 
-func (s *CalclualtorSuite) SetupSuite() {
+func (s *AsyncServiceTestSuite) SetupSuite() {
 	s.as = New()
 }
 
 func TestCalculatorService(t *testing.T) {
-	suite.Run(t, new(CalclualtorSuite))
+	suite.Run(t, new(AsyncServiceTestSuite))
 }
 
-func (s *CalclualtorSuite) TestDo() {
+func (s *AsyncServiceTestSuite) TestDo() {
 	ctx := context.Background()
 	var i int
 	m := sync.Mutex{}

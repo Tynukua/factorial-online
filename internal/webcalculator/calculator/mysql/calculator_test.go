@@ -11,19 +11,19 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type CalculatorSuite struct {
+type CalculatorTestSuite struct {
 	suite.Suite
 	calculator *Calculator
 }
 
-func (s *CalculatorSuite) SetupSuite() {
+func (s *CalculatorTestSuite) SetupSuite() {
 
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
 	s.Require().NoError(err)
 	s.calculator = New(db, mathematics.New())
 }
 
-func (s *CalculatorSuite) TestFactorial() {
+func (s *CalculatorTestSuite) TestFactorial() {
 	ctx := context.TODO()
 	s.Require().Equal(s.calculator.Factorial(ctx, 5), big.NewInt(120))
 	s.Require().Equal(s.calculator.Factorial(ctx, 6), big.NewInt(720))
@@ -31,6 +31,6 @@ func (s *CalculatorSuite) TestFactorial() {
 }
 
 func TestNewCalculator(t *testing.T) {
-	suite.Run(t, new(CalculatorSuite))
+	suite.Run(t, new(CalculatorTestSuite))
 
 }
