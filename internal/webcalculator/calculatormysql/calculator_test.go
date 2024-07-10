@@ -1,9 +1,9 @@
-package calculator_mysql
+package calculatormysql
 
 import (
 	"context"
 	"database/sql"
-	"github.com/Tynukua/factorial-online/internal/webcalculator/calculator_mathematics"
+	"github.com/Tynukua/factorial-online/internal/webcalculator/calculatormathematics"
 	"github.com/stretchr/testify/suite"
 	"math/big"
 	"testing"
@@ -20,7 +20,7 @@ func (s *CalculatorSuite) SetupSuite() {
 
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
 	s.Require().NoError(err)
-	s.calculator = New(db, calculator_mathematics.New())
+	s.calculator = New(db, calculatormathematics.New())
 }
 
 func (s *CalculatorSuite) TestFactorial() {
