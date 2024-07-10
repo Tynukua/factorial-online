@@ -7,11 +7,13 @@ import (
 	"github.com/Tynukua/factorial-online/internal/calculator/service"
 	"log"
 	"testing"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestCalculatorService(t *testing.T) {
 	var a service.AsyncService
-	m := mysql.NewMysqlCalculator("shrug", mathematics.MathCalculator{})
+	m := mysql.NewMysqlCalculator("root:example@tcp(localhost:3306)/testdb", mathematics.MathCalculator{})
 	ctx := context.TODO()
 	f := func() {
 		log.Println(m.Factorial(ctx, 5555))
