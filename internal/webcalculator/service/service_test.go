@@ -9,18 +9,18 @@ import (
 
 type AsyncServiceTestSuite struct {
 	suite.Suite
-	as *AsyncService
+	s *AsyncService
 }
 
-func (s *AsyncServiceTestSuite) SetupSuite() {
-	s.as = New()
+func (suite *AsyncServiceTestSuite) SetupSuite() {
+	suite.s = New()
 }
 
 func TestCalculatorService(t *testing.T) {
 	suite.Run(t, new(AsyncServiceTestSuite))
 }
 
-func (s *AsyncServiceTestSuite) TestDo() {
+func (suite *AsyncServiceTestSuite) TestDo() {
 	ctx := context.Background()
 	var i int
 	m := sync.Mutex{}
@@ -36,7 +36,7 @@ func (s *AsyncServiceTestSuite) TestDo() {
 	}
 	fs := []func(){f, g}
 
-	err := s.as.Do(ctx, fs)
-	s.Require().NoError(err)
-	s.Require().Equal(i, len(fs))
+	err := suite.s.Do(ctx, fs)
+	suite.Require().NoError(err)
+	suite.Require().Equal(i, len(fs))
 }

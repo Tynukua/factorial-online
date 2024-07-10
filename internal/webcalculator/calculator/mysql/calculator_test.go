@@ -16,17 +16,18 @@ type CalculatorTestSuite struct {
 	calculator *Calculator
 }
 
-func (s *CalculatorTestSuite) SetupSuite() {
+func (suite *CalculatorTestSuite) SetupSuite() {
 
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
-	s.Require().NoError(err)
-	s.calculator = New(db, mathematics.New())
+	suite.Require().NoError(err)
+	suite.calculator = New(db, mathematics.New())
 }
 
-func (s *CalculatorTestSuite) TestFactorial() {
-	ctx := context.TODO()
-	s.Require().Equal(s.calculator.Factorial(ctx, 5), big.NewInt(120))
-	s.Require().Equal(s.calculator.Factorial(ctx, 6), big.NewInt(720))
+func (suite *CalculatorTestSuite) TestFactorial() {
+	ctx := context.Background()
+	suite.Require().Equal(suite.calculator.Factorial(ctx, 0), big.NewInt(1))
+	suite.Require().Equal(suite.calculator.Factorial(ctx, 1), big.NewInt(1))
+	suite.Require().Equal(suite.calculator.Factorial(ctx, 10), big.NewInt(3628800))
 
 }
 
