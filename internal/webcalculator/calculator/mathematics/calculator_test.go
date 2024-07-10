@@ -1,14 +1,10 @@
-package calculatormysql
+package mathematics
 
 import (
 	"context"
-	"database/sql"
-	"github.com/Tynukua/factorial-online/internal/webcalculator/calculatormathematics"
 	"github.com/stretchr/testify/suite"
 	"math/big"
 	"testing"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type CalculatorSuite struct {
@@ -17,10 +13,7 @@ type CalculatorSuite struct {
 }
 
 func (s *CalculatorSuite) SetupSuite() {
-
-	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
-	s.Require().NoError(err)
-	s.calculator = New(db, calculatormathematics.New())
+	s.calculator = New()
 }
 
 func (s *CalculatorSuite) TestFactorial() {
@@ -30,7 +23,6 @@ func (s *CalculatorSuite) TestFactorial() {
 
 }
 
-func TestNewCalculator(t *testing.T) {
+func TestCalculatorFactorial(t *testing.T) {
 	suite.Run(t, new(CalculatorSuite))
-
 }
