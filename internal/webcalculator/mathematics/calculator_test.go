@@ -18,8 +18,8 @@ func (s *CalculatorSuite) SetupSuite() {
 
 func (s *CalculatorSuite) TestFactorial() {
 	ctx := context.TODO()
-	s.Require().Equal(s.mc.Factorial(ctx, 5), big.NewInt(120))
-	s.Require().Equal(s.mc.Factorial(ctx, 6), big.NewInt(720))
+	s.Require().Equal(s.calculator.Factorial(ctx, 5), big.NewInt(120))
+	s.Require().Equal(s.calculator.Factorial(ctx, 6), big.NewInt(720))
 
 }
 
