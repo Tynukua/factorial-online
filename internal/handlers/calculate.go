@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Tynukua/factorial-online/internal/config"
 	"github.com/Tynukua/factorial-online/internal/services"
+	"log"
 	"math/big"
 	"net/http"
 
@@ -42,5 +43,8 @@ func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httpr
 		http.Error(w, `{"error":"Incorrect input"}`, http.StatusInternalServerError)
 		return
 	}
-	w.Write(responsedata)
+	_, err = w.Write(responsedata)
+	if err != nil {
+		log.Println(err)
+	}
 }

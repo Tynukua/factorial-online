@@ -37,7 +37,10 @@ func (m *Calculator) Factorial(ctx context.Context, sn int) *big.Int {
 	if err != nil {
 		result = m.fallback.Factorial(ctx, sn)
 		query := "INSERT INTO factorials (number, result) VALUES (?, ?)"
-		m.db.Exec(query, sn, result.String())
+		_, err = m.db.Exec(query, sn, result.String())
+		if err != nil {
+			log.Println(err)
+		}
 		return result
 	} else {
 		result.SetString(storedValue, 10)
