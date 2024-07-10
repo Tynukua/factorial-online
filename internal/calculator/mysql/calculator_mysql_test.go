@@ -20,7 +20,7 @@ func (s *CalculatorSuite) SetupSuite() {
 
 	db, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/testdb")
 	s.Require().NoError(err)
-	s.mc = NewCalculator(db, mathematics.NewCalculator())
+	s.mc = New(db, mathematics.New())
 }
 
 func (s *CalculatorSuite) TestFactorial() {

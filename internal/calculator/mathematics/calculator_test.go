@@ -4,20 +4,25 @@ import (
 	"context"
 	"github.com/stretchr/testify/suite"
 	"math/big"
+	"testing"
 )
 
-type CalclualtorSuite struct {
+type CalculatorSuite struct {
 	suite.Suite
-	mc *Calculator
+	calculator *Calculator
 }
 
-func (s *CalclualtorSuite) SetupSuite() {
-	s.mc = NewCalculator()
+func (s *CalculatorSuite) SetupSuite() {
+	s.calculator = New()
 }
 
-func (s *CalclualtorSuite) TestFactorial() {
+func (s *CalculatorSuite) TestFactorial() {
 	ctx := context.TODO()
 	s.Require().Equal(s.mc.Factorial(ctx, 5), big.NewInt(120))
 	s.Require().Equal(s.mc.Factorial(ctx, 6), big.NewInt(720))
 
+}
+
+func TestCalculatorFactorial(t *testing.T) {
+	suite.Run(t, new(CalculatorSuite))
 }

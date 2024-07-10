@@ -2,15 +2,13 @@ package mathematics
 
 import (
 	"context"
-	"github.com/Tynukua/factorial-online/internal/calculator"
 	"math/big"
 )
 
 type Calculator struct {
-	calculator.Calculator
 }
 
-func NewCalculator() *Calculator {
+func New() *Calculator {
 	return &Calculator{}
 }
 

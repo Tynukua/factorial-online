@@ -10,7 +10,7 @@ type AsyncService struct {
 	calculator.AsyncService
 }
 
-func NewAsyncService() *AsyncService {
+func New() *AsyncService {
 	return &AsyncService{}
 }
 

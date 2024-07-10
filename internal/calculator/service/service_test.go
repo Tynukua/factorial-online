@@ -13,7 +13,7 @@ type CalclualtorSuite struct {
 }
 
 func (s *CalclualtorSuite) SetupSuite() {
-	s.as = NewAsyncService()
+	s.as = New()
 }
 
 func TestCalculatorService(t *testing.T) {

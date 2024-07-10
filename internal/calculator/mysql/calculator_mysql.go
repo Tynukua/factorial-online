@@ -9,12 +9,11 @@ import (
 )
 
 type Calculator struct {
-	calculator.Calculator
 	db       *sql.DB
 	fallback calculator.Calculator
 }
 
-func NewCalculator(db *sql.DB, fallback calculator.Calculator) *Calculator {
+func New(db *sql.DB, fallback calculator.Calculator) *Calculator {
 	query := `CREATE TABLE IF NOT EXISTS factorials (
 		number INT NOT NULL,
 		result TEXT NOT NULL,
