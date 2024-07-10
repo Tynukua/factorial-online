@@ -5,26 +5,36 @@ import (
 	"github.com/Tynukua/factorial-online/internal/calculator/mathematics"
 	"github.com/Tynukua/factorial-online/internal/calculator/mysql"
 	"github.com/Tynukua/factorial-online/internal/calculator/service"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/stretchr/testify/suite"
 	"log"
 	"testing"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
+type CalclualtorSuite struct {
+	suite.Suite
+	as service.AsyncService
+	mc mysql.MysqlCalculator
+}
+
+func (s *CalclualtorSuite) SetupSuite() {
+	s.mc = mysql.NewMysqlCalculator("root:example@tcp(localhost:3306)/testdb", mathematics.MathCalculator{})
+}
+
 func TestCalculatorService(t *testing.T) {
-	var a service.AsyncService
-	m := mysql.NewMysqlCalculator("root:example@tcp(localhost:3306)/testdb", mathematics.MathCalculator{})
-	ctx := context.TODO()
+	suite.Run(t, new(CalclualtorSuite))
+}
+
+func (s *CalclualtorSuite) TestDo() {
+	ctx := context.Background()
 	f := func() {
-		log.Println(m.Factorial(ctx, 5555))
+		log.Println(s.mc.Factorial(ctx, 5555))
 	}
 	g := func() {
-		log.Println(m.Factorial(ctx, 6666))
+		log.Println(s.mc.Factorial(ctx, 6666))
 	}
 	fs := []func(){f, g}
-	err := a.Do(ctx, fs)
 
-	if err != nil {
-		t.Error(err)
-	}
+	err := s.as.Do(ctx, fs)
+	s.Require().NoError(err)
 }
