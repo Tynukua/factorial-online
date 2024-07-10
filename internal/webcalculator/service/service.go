@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"github.com/Tynukua/factorial-online/internal/calculator"
+	"github.com/Tynukua/factorial-online/internal/webcalculator"
 	"sync"
 )
 
 type AsyncService struct {
-	calculator.AsyncService
+	webcalculator.AsyncService
 }
 
 func New() *AsyncService {

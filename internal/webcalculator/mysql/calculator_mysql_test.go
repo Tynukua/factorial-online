@@ -3,7 +3,7 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"github.com/Tynukua/factorial-online/internal/calculator/mathematics"
+	"github.com/Tynukua/factorial-online/internal/webcalculator/mathematics"
 	"github.com/stretchr/testify/suite"
 	"math/big"
 	"testing"
