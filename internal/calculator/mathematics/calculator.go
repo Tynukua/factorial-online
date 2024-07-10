@@ -6,11 +6,15 @@ import (
 	"math/big"
 )
 
-type MathCalculator struct {
+type Calculator struct {
 	calculator.Calculator
 }
 
-func (c MathCalculator) Factorial(ctx context.Context, n int) *big.Int {
+func NewCalculator() *Calculator {
+	return &Calculator{}
+}
+
+func (c *Calculator) Factorial(ctx context.Context, n int) *big.Int {
 	result := big.NewInt(1)
 	for n > 1 {
 		result.Mul(result, big.NewInt(int64(n)))

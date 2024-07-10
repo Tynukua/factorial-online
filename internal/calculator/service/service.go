@@ -10,7 +10,11 @@ type AsyncService struct {
 	calculator.AsyncService
 }
 
-func (a AsyncService) Do(ctx context.Context, fs []func()) error {
+func NewAsyncService() *AsyncService {
+	return &AsyncService{}
+}
+
+func (a *AsyncService) Do(ctx context.Context, fs []func()) error {
 	wg := sync.WaitGroup{}
 	wg.Add(len(fs))
 	for _, f := range fs {
