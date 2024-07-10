@@ -23,18 +23,27 @@ func (suite *CalculatorTestSuite) SetupSuite() {
 	suite.calculator = New(db, mathematics.New())
 }
 
-func (suite *CalculatorTestSuite) TestZero() {
-	ctx := context.Background()
-	suite.Require().Equal(suite.calculator.Factorial(ctx, 0), big.NewInt(1))
+type FactorialCase struct {
+	n      int
+	result *big.Int
 }
-func (suite *CalculatorTestSuite) TestOne() {
-	ctx := context.Background()
-	suite.Require().Equal(suite.calculator.Factorial(ctx, 1), big.NewInt(1))
-}
-func (suite *CalculatorTestSuite) TestTen() {
-	ctx := context.Background()
-	suite.Require().Equal(suite.calculator.Factorial(ctx, 10), big.NewInt(3628800))
 
+func (suite *CalculatorTestSuite) TestFactorial() {
+	ctx := context.Background()
+	cases := []FactorialCase{{
+		n:      0,
+		result: big.NewInt(1),
+	}, {
+		n:      1,
+		result: big.NewInt(1),
+	}, {
+		n:      10,
+		result: big.NewInt(3628800),
+	},
+	}
+	for _, c := range cases {
+		suite.Require().Equal(suite.calculator.Factorial(ctx, c.n), c.result)
+	}
 }
 
 func TestNewCalculator(t *testing.T) {
