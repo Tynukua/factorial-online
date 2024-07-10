@@ -4,6 +4,7 @@ import (
 	"github.com/Tynukua/factorial-online/internal/config"
 	database2 "github.com/Tynukua/factorial-online/internal/database"
 	"github.com/Tynukua/factorial-online/internal/util"
+	"log"
 	"math/big"
 	"runtime"
 )
@@ -42,8 +43,9 @@ func (s FactorialService) DoubleFactorial(a int, b int) (*big.Int, *big.Int) {
 	}
 	bf.Mul(bcf, util.MulRangeParallel(bc+1, b, runtime.NumCPU()))
 
-	s.db.SaveFactorial(a, af)
-	s.db.SaveFactorial(b, bf)
+	log.Println(s.db.SaveFactorial(a, af))
+	log.Println(s.db.SaveFactorial(b, bf))
+
 	if swapped {
 		af, bf = bf, af
 	}

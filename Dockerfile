@@ -4,7 +4,7 @@ workdir /go/src/app
 copy go.mod go.sum ./
 run go mod download
 copy . .
-run go build -o /usr/local/bin/app
+run go build -o /usr/local/bin/app cmd/webapp/main.go
 
 from alpine:3.20
 copy --from=0 /usr/local/bin/app /usr/local/bin/app
