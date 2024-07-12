@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Tynukua/factorial-online/internal/config"
-	"github.com/Tynukua/factorial-online/internal/services"
+	"github.com/Tynukua/factorial-online/internal/webservices"
 	"log"
 	"math/big"
 	"net/http"
@@ -18,11 +18,11 @@ type CalculateRequest struct {
 }
 
 type Handler struct {
-	service services.FactorialService
+	service webservices.FactorialService
 }
 
 func NewCalculateHandler(cfg config.Config) Handler {
-	return Handler{service: services.NewFactorialService(cfg)}
+	return Handler{service: webservices.NewFactorialService(cfg)}
 }
 
 type ContentKey string
@@ -36,7 +36,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func (handler Handler) Calculate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.Context().Value(CalculateDataKey).(CalculateRequest)
 	var a, b int = *params.A, *params.B
-	af, bf := handler.service.DoubleFactorial(a, b)
+	af, bf := handler.service.DoubleFactorial(r.Context(), a, b)
 	response := map[string]*big.Int{"a!": af, "b!": bf}
 	responsedata, err := json.Marshal(response)
 	if err != nil {

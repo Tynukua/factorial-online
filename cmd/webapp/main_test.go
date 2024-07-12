@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/Tynukua/factorial-online/internal/config"
-	"github.com/Tynukua/factorial-online/internal/services"
 	"github.com/Tynukua/factorial-online/internal/util"
+	"github.com/Tynukua/factorial-online/internal/webservices"
 	"math/big"
 	"testing"
 )
@@ -53,7 +53,7 @@ type FactorialCase struct {
 }
 
 func TestDoubleFactorial(t *testing.T) {
-	s := services.NewFactorialService(config.Config{})
+	s := webservices.NewFactorialService(config.Config{})
 
 	cases := []FactorialCase{
 		{1, 2, big.NewInt(1), big.NewInt(2)},

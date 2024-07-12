@@ -6,6 +6,8 @@ import (
 	"github.com/Tynukua/factorial-online"
 	"log"
 	"math/big"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Calculator struct {
